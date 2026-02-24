@@ -10,8 +10,6 @@ Technical Report by
 
 The stock market monitoring application requires two distinct categories of data interaction: structured, resource-based operations such as creating portfolios, managing alert configurations, and authenticating users; and flexible, query-heavy reads where clients need to retrieve deeply nested combinations of portfolio positions, market snapshots, and historical price data in a single round-trip. REST and GraphQL address these two categories differently and, as this section will demonstrate, complement each other well when used together.
 
----
-
 ### 1.2 REST API for Stock Market Operations
 
 REST (Representational State Transfer) exposes resources via a fixed set of HTTP endpoints and is well-suited to the predictable, resource-oriented actions in the application. Its cache-friendly GET semantics, universal client support, and straightforward error handling via HTTP status codes make it the natural choice for the following operations:
@@ -42,7 +40,6 @@ REST (Representational State Transfer) exposes resources via a fixed set of HTTP
 
 REST suffers from over-fetching and under-fetching when clients have complex, variable data needs. For example, a dashboard that must simultaneously display a user's portfolio positions enriched with live quotes, sector breakdowns, and 30-day P&L trends would require multiple sequential REST calls. This increases latency and unnecessary data transfer — a problem GraphQL resolves.
 
----
 
 ### 1.3 GraphQL API for Flexible Data Queries
 
@@ -86,7 +83,6 @@ GraphQL mutations handle state changes that require complex, related updates. Fo
 
 GraphQL queries with unbounded depth (e.g., positions → history → dividends → company → ...) can cause N+1 database queries. This must be mitigated with DataLoader batching. Additionally, HTTP-level caching is harder with GraphQL because all queries typically use POST to the same endpoint.
 
----
 
 ### 1.4 REST vs GraphQL: Comparative Summary
 
@@ -99,7 +95,6 @@ GraphQL queries with unbounded depth (e.g., positions → history → dividends 
 | Tooling Maturity | ✅ Excellent (Postman, Swagger) | ✅ Good (Apollo Studio, GraphiQL) |
 | Best Fit | Auth, CRUD, alert management | Dashboard queries, portfolio data |
 
----
 
 ## Section 2: WebSockets for Real-time Communication
 
