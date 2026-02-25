@@ -219,7 +219,7 @@ A user configures a price alert via a REST `POST` request to `/api/alerts`. The 
 
 Market Data Providers stream price ticks to the Market Data Ingestion Service via their own WebSocket or REST feeds. The ingestion service normalises the data, writes time-series records to TimescaleDB, updates the Redis price cache, and publishes events to a Kafka topic. The WebSocket Server consumes from Kafka and pushes each tick to all subscribed clients within milliseconds of the exchange price being reported. Simultaneously, the Alert Service consumes the same Kafka stream and evaluates alert conditions; if a threshold is crossed, it publishes an alert event that the WebSocket Server delivers to the affected user's client.
 
-### 4.4 Notes on key Azure services used
+### 4.3 Notes on key Azure services used
 
 - **Azure API Management**: single front door for REST + GraphQL (policies, auth, rate limits).
 - **Azure Web PubSub**: managed WebSocket service for scalable real-time fan-out.
@@ -232,4 +232,4 @@ Market Data Providers stream price ticks to the Market Data Ingestion Service vi
 
 ## Conclusion
 
-The hybrid API architecture proposed in this report assigns each communication technology to the workloads it is most efficient at handling. REST provides a stable, cacheable, semantically clear interface for authentication and resource management. GraphQL eliminates over-fetching and multiple round-trips for the complex dashboard queries that define the user experience. WebSockets make real-time delivery of price ticks and alerts possible with latencies that no polling strategy can match. Together, these three protocols backed form a production-grade foundation capable of serving thousands of concurrent users with sub-100ms data freshness during live market hours.
+The hybrid API architecture proposed in this report assigns each communication technology to the workloads it is most efficient at handling. REST provides a stable, cacheable, semantically clear interface for authentication and resource management. GraphQL eliminates over-fetching and multiple round-trips for the complex dashboard queries that define the user experience. WebSockets make real-time delivery of price ticks and alerts possible with latencies that no polling strategy can match. Together, these three architectural styles form a production-grade foundation capable of serving thousands of concurrent users with sub-100ms data freshness during live market hours.
