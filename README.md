@@ -4,7 +4,10 @@
 
 [Presention Video](url)
 
-Technical Report by 
+## Group Members 
+- **Corey Markstewart**
+- **Faiza Boudehane**
+- **Idris Jovial Sop Nwabo**
 
 ## Section 1: REST and GraphQL for Data Requests and Updates
 
