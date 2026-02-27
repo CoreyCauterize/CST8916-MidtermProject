@@ -225,8 +225,7 @@ Market Data Providers stream price ticks to the **Market Data Ingestion WebSocke
 - **Azure API Management**: single front door for REST + GraphQL (policies, auth, rate limits).
 - **Azure Web PubSub**: managed WebSocket service for scalable real-time fan-out.
 - **Azure Event Hubs**: high-throughput ingestion stream for price ticks.
-- **Azure Cache for Redis**: fast access to *latest quotes* for dashboard reads.
-- **Azure SQL / Cosmos DB**: transactional and flexible stores for portfolios, rules, watchlists.
+- **Azure Cosmos DB**: transactional and flexible stores for portfolios, rules, watchlists.
 - **Azure Monitor + Application Insights**: logs, metrics, distributed tracing.
 
 ---
