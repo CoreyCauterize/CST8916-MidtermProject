@@ -160,9 +160,7 @@ Use a **combination**:
 | GraphQL API | Apollo Server + DataLoader | Mature ecosystem, N+1 prevention, schema federation |
 | WebSocket Server | Node.js + Socket.io or `ws` library | Event-loop optimised for concurrent connections |
 | Message Queue | Apache Kafka | High-throughput, durable pub/sub for price events |
-| Relational DB | SQL or PostgreSQL | ACID transactions for portfolios and user data |
-| Cache | Redis | Sub-millisecond price cache, session storage, alert state |
-| Time-Series DB | TimescaleDB (PostgreSQL extension) | Efficient storage and query of OHLCV price history |
+| Non-Relational DB | MongoDB | ACID transactions for portfolios and user data |
 | Client (Web) | React + Apollo Client + Socket.io-client | GraphQL caching + WebSocket subscription management |
 | Client (Mobile) | React Native + same libraries | Code sharing between web and mobile |
 
@@ -212,15 +210,15 @@ flowchart LR
 
 #### 4.2.1 Portfolio Dashboard Load (GraphQL)
 
-When a user opens their dashboard, the client sends a GraphQL POST request through the API Gateway to the Apollo Server. Apollo resolves the query by calling the Portfolio Service for position data and batching price lookups against the Redis cache via DataLoader. The single network response contains all data needed to render the full dashboard view.
+When a user opens their dashboard, the client sends a GraphQL POST request to fetch portfolio data and current positions from MongoDB. The GraphQL resolver queries MongoDB directly for portfolio positions and user data. Real-time price updates are received separately via the WebSocket connection, allowing the dashboard to display static portfolio data immediately while prices update in real-time.
 
 #### 4.2.2 Alert Creation (REST)
 
-A user configures a price alert via a REST `POST` request to `/api/alerts`. The REST API writes the alert configuration to PostgreSQL and stores the active threshold in Redis for sub-millisecond lookup during the high-frequency price evaluation loop in the Alert Service.
+A user configures a price alert via a REST `POST` request to `/api/alerts`. The REST API writes the alert configuration to MongoDB, including the alert conditions, thresholds, and user preferences. The Alert Service maintains an in-memory cache of active alerts loaded from MongoDB at startup and refreshed periodically, enabling fast threshold evaluation during high-frequency price processing without external dependencies.
 
 #### 4.2.3 Live Price Feed (WebSocket)
 
-Market Data Providers stream price ticks to the Market Data Ingestion Service via their own WebSocket or REST feeds. The ingestion service normalises the data, writes time-series records to TimescaleDB, updates the Redis price cache, and publishes events to a Kafka topic. The WebSocket Server consumes from Kafka and pushes each tick to all subscribed clients within milliseconds of the exchange price being reported. Simultaneously, the Alert Service consumes the same Kafka stream and evaluates alert conditions; if a threshold is crossed, it publishes an alert event that the WebSocket Server delivers to the affected user's client.
+Market Data Providers stream price ticks to the **Market Data Ingestion WebSocket Server**, which normalizes and validates incoming data before publishing it to a message queue. The **Client WebSocket Server** consumes price events from this message queue, evaluates active alert conditions loaded from MongoDB, and immediately broadcasts relevant price updates to connected clients. When price thresholds are crossed, alert notifications are sent through the same client WebSocket connection. This two-server architecture separates data ingestion concerns from client communication, enabling independent scaling of each component.
 
 ### 4.3 Notes on key Azure services used
 
