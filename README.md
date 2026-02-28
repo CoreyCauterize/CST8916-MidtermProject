@@ -233,3 +233,8 @@ Market Data Providers stream price ticks to the **Market Data Ingestion WebSocke
 ## Conclusion
 
 The hybrid API architecture proposed in this report assigns each communication technology to the workloads it is most efficient at handling. REST provides a stable, cacheable, semantically clear interface for authentication and resource management. GraphQL eliminates over-fetching and multiple round-trips for the complex dashboard queries that define the user experience. WebSockets make real-time delivery of price ticks and alerts possible with latencies that no polling strategy can match. Together, these three architectural styles form a production-grade foundation capable of serving thousands of concurrent users with sub-100ms data freshness during live market hours.
+
+
+## AI Transparency
+
+AI was used to help generate the report, then rewritten to our understanding and words and reconfigured design to our diagram
